@@ -11,6 +11,7 @@ const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SU
 
 // Application State
 const state = {
+  isAuthenticated: false,
   currentView: "orders",
   viewMode: "kanban", // 'kanban' or 'table'
   statusFilter: "all",
@@ -19,6 +20,12 @@ const state = {
   products: [],
   charts: {},
   realtimeChannel: null
+};
+
+// Required Admin Credentials
+const ADMIN_CREDENTIALS = {
+  email: "test@makeup.com",
+  pass: "admin1234"
 };
 
 // Workflow Status Progression Order
@@ -36,15 +43,64 @@ const STAGE_LABELS = {
 // BOOTSTRAP & INITIALIZATION
 // ============================================================
 document.addEventListener("DOMContentLoaded", async () => {
+  initAuthGate();
   initNavigation();
   initSearch();
   initDragAndDrop();
   initSimulateButton();
   
-  await fetchInitialData();
-  initRealtimeRadar();
-  initCharts();
+  // Check if session token exists in sessionStorage
+  if (sessionStorage.getItem("maison_velour_admin_auth") === "true") {
+    unlockAdminConsole();
+  }
 });
+
+// ============================================================
+// ADMIN LOGIN & AUTH GATE
+// ============================================================
+function initAuthGate() {
+  const form = document.getElementById("adminLoginForm");
+  const errorMsg = document.getElementById("authErrorMsg");
+  const logoutBtn = document.getElementById("btnAdminLogout");
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = document.getElementById("adminEmail").value.trim().toLowerCase();
+    const pass = document.getElementById("adminPass").value.trim();
+
+    if (email === ADMIN_CREDENTIALS.email && pass === ADMIN_CREDENTIALS.pass) {
+      errorMsg.style.display = "none";
+      sessionStorage.setItem("maison_velour_admin_auth", "true");
+      unlockAdminConsole();
+      showToast("Access Granted. Welcome to Maison Vélour Console.");
+    } else {
+      errorMsg.style.display = "block";
+      errorMsg.textContent = "Invalid Atelier credentials or cipher key.";
+      form.classList.add("auth-shake");
+      setTimeout(() => form.classList.remove("auth-shake"), 600);
+    }
+  });
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      sessionStorage.removeItem("maison_velour_admin_auth");
+      state.isAuthenticated = false;
+      document.getElementById("adminAuthOverlay").classList.remove("is-hidden");
+      showToast("Console locked. Session ended.");
+    });
+  }
+}
+
+async function unlockAdminConsole() {
+  state.isAuthenticated = true;
+  document.getElementById("adminAuthOverlay").classList.add("is-hidden");
+  
+  if (state.orders.length === 0) {
+    await fetchInitialData();
+    initRealtimeRadar();
+    initCharts();
+  }
+}
 
 // ============================================================
 // DATA FETCHING (SUPABASE + FALLBACK)
