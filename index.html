@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAISON VÉLOUR — 2027 Haute Cosmetics &amp; Bio-Pigment Atelier</title>
+  <meta name="description" content="Maison Vélour 2027 Couture Makeup. Weightless serum-infused pigments, sculptural velvet lipsticks, and luminous glass-skin elixirs crafted in Paris &amp; Seoul." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Custom Dual-Ring Cursor -->
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true">
+    <span class="cursor-label" id="cursorLabel"></span>
+  </div>
+
+  <!-- Silk Curtain Preloader -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader-inner">
+      <div class="preloader-eyebrow">PARIS · SEOUL · ATELIER 2027</div>
+      <div class="preloader-brand">MAISON VÉLOUR</div>
+      <div class="preloader-bar-wrap">
+        <div class="preloader-bar" id="preloaderBar"></div>
+      </div>
+      <div class="preloader-counter" id="preloaderCounter">00</div>
+    </div>
+  </div>
+
+  <!-- Scroll Progress Rail -->
+  <div class="scroll-progress-track" aria-hidden="true">
+    <div class="scroll-progress-fill" id="scrollProgressFill"></div>
+  </div>
+
+  <!-- Floating Glassmorphic Navigation -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="#hero" class="brand-logo" data-cursor="TOP">
+        <span class="brand-mark" aria-hidden="true">V</span>
+        <span class="brand-text">MAISON VÉLOUR</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="#atelier" class="nav-link" data-cursor="READ">Atelier</a>
+        <a href="#collection" class="nav-link" data-cursor="SHOP">Collection</a>
+        <a href="#runway" class="nav-link" data-cursor="EXPLORE">Runway ’27</a>
+        <a href="#shade-lab" class="nav-link" data-cursor="MIX">Shade Lab</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="searchToggleBtn" aria-label="Search products (Press /)" data-cursor="SEARCH">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20L16.2 16.2" />
+          </svg>
+          <span class="kbd-hint">/</span>
+        </button>
+
+        <button class="icon-btn" id="wishlistToggleBtn" aria-label="Saved shades" data-cursor="SAVED">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M12 20.5s-7.5-4.7-9.5-9.2C.9 7.8 3.2 4.5 6.8 4.5c2 0 3.7 1 5.2 2.8 1.5-1.8 3.2-2.8 5.2-2.8 3.6 0 5.9 3.3 4.3 6.8-2 4.5-9.5 9.2-9.5 9.2Z" />
+          </svg>
+          <span class="badge-count" id="wishlistCount">0</span>
+        </button>
+
+        <button class="bag-pill magnetic-btn" id="bagToggleBtn" aria-label="Open shopping bag" data-cursor="BAG">
+          <span class="bag-dot"></span>
+          <span>Bag</span>
+          <span class="bag-count" id="bagCount">0</span>
+        </button>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
+    <div class="mobile-nav-links">
+      <a href="#atelier" class="mobile-nav-link">01 — The Atelier</a>
+      <a href="#collection" class="mobile-nav-link">02 — Couture Collection</a>
+      <a href="#runway" class="mobile-nav-link">03 — Runway 2027</a>
+      <a href="#shade-lab" class="mobile-nav-link">04 — Bio-Shade Lab</a>
+    </div>
+  </div>
+
+  <main id="smoothContent">
+    <!-- ==================== 1. HERO STAGE ==================== -->
+    <section class="hero-section" id="hero">
+      <canvas id="heroFluidCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+
+      <div class="hero-meta-top">
+        <span class="mono-tag">EDITION N° 27.04</span>
+        <span class="mono-tag">BIO-SCULPTURAL PIGMENT SYSTEM</span>
+        <span class="mono-tag">48.8566° N · 126.9780° E</span>
+      </div>
+
+      <div class="hero-stage">
+        <!-- Scroll-scrubbed opposing display lines -->
+        <h1 class="hero-title-layer" aria-label="Sculpted in Liquid Light">
+          <span class="hero-line hero-line-left" id="heroLineLeft">
+            <span class="reveal-word">SCULPTED</span>
+          </span>
+          <span class="hero-line hero-line-right" id="heroLineRight">
+            <span class="reveal-word italic-serif">in Liquid Light</span>
+          </span>
+        </h1>
+
+        <!-- Central 3D Arch Portrait Frame -->
+        <div class="hero-arch-wrap" id="heroArchWrap" data-cursor="EXPLORE">
+          <div class="hero-arch-frame" id="heroArchFrame">
+            <img
+              src="assets/hero-editorial.jpg"
+              alt="Maison Vélour 2027 high-fashion beauty portrait with luminous glass skin and crimson velvet lips"
+              class="hero-arch-img"
+              id="heroArchImg"
+            />
+            <div class="hero-arch-sheen"></div>
+          </div>
+
+          <!-- Orbiting Stamp Badge -->
+          <div class="orbit-stamp" aria-hidden="true">
+            <svg viewBox="0 0 140 140" width="126" height="126">
+              <defs>
+                <path id="orbitCircle" d="M 70, 70 m -52, 0 a 52,52 0 1,1 104,0 a 52,52 0 1,1 -104,0" />
+              </defs>
+              <text class="orbit-text">
+                <textPath href="#orbitCircle">
+                  MAISON VÉLOUR · BIO-PEARL COUTURE · 2027 ·
+                </textPath>
+              </text>
+            </svg>
+            <span class="orbit-center">27</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-bottom-bar">
+        <div class="hero-lead">
+          <p>
+            Serum-infused mineral pigments engineered for zero-gravity skin luminosity and 18-hour couture velvet color.
+          </p>
+          <div class="hero-cta-row">
+            <a href="#collection" class="btn-primary magnetic-btn" data-cursor="SHOP">
+              <span>Explore Drop ’27</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </a>
+            <a href="#shade-lab" class="btn-ghost magnetic-btn" data-cursor="CALIBRATE">
+              <span>Enter Shade Lab</span>
+            </a>
+          </div>
+        </div>
+
+        <a href="#atelier" class="scroll-cue" aria-label="Scroll to Atelier">
+          <span class="scroll-cue-line"></span>
+          <span class="mono-tag">SCROLL TO AWAKEN</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ==================== 2. VELOCITY MARQUEE ==================== -->
+    <section class="marquee-band" aria-label="Brand highlights">
+      <div class="marquee-track" id="marqueeTrackTop">
+        <div class="marquee-content">
+          <span>BIO-PEARL PIGMENTS</span>
+          <span class="dot">✦</span>
+          <span>94% SKINCARE MATRIX</span>
+          <span class="dot">✦</span>
+          <span>REFILLABLE OBSIDIAN GLASS</span>
+          <span class="dot">✦</span>
+          <span>PARIS · SEOUL LABS</span>
+          <span class="dot">✦</span>
+          <span>100% CRUELTY-FREE</span>
+          <span class="dot">✦</span>
+        </div>
+        <div class="marquee-content" aria-hidden="true">
+          <span>BIO-PEARL PIGMENTS</span>
+          <span class="dot">✦</span>
+          <span>94% SKINCARE MATRIX</span>
+          <span class="dot">✦</span>
+          <span>REFILLABLE OBSIDIAN GLASS</span>
+          <span class="dot">✦</span>
+          <span>PARIS · SEOUL LABS</span>
+          <span class="dot">✦</span>
+          <span>100% CRUELTY-FREE</span>
+          <span class="dot">✦</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 3. SCROLL-ILLUMINATED MANIFESTO (ALABASTER TRANSITION) ==================== -->
+    <section class="atelier-section" id="atelier">
+      <div class="container">
+        <div class="atelier-grid">
+          <div class="atelier-copy">
+            <span class="section-kicker reveal-up">01 // THE 2027 PHILOSOPHY</span>
+            <h2 class="manifesto-text" id="manifestoText" data-word-reveal>
+              Color should breathe like bare skin, gleam like liquid pearl, and feel like crushed silk across every contour.
+            </h2>
+
+            <div class="atelier-metrics reveal-up">
+              <div class="metric-card">
+                <span class="metric-val" data-count="94" data-suffix="%">0%</span>
+                <span class="metric-label">Bio-Ferment Serum Base</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-val" data-count="18" data-suffix="HR">0HR</span>
+                <span class="metric-label">Zero-Crease Velvet Hold</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-val" data-count="42" data-suffix="">0</span>
+                <span class="metric-label">Micro-Calibrated Shades</span>
+              </div>
+            </div>
+
+            <p class="atelier-subcopy reveal-up">
+              Born between our Parisian fragrance house and Seoul’s biotech pigment lab, Maison Vélour replaces heavy waxes with weightless botanical squalane and light-bending mica crystals.
+            </p>
+          </div>
+
+          <div class="atelier-visual">
+            <div class="clip-reveal-frame parallax-frame" data-speed="-0.08" data-cursor="TEXTURE">
+              <img
+                src="assets/editorial-texture.jpg"
+                alt="Macro cosmetic swirl of crimson velvet lipstick, gold serum droplets, and iridescent pearl shimmer"
+                class="atelier-texture-img"
+              />
+              <div class="floating-spec-card">
+                <span class="mono-tag">TEXTURE STUDY // 04</span>
+                <strong>Squalane + Chromatic Mica</strong>
+                <p>Cold-milled at 4°C to preserve luminous pigment clarity.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 4. INTERACTIVE E-COMMERCE COLLECTION ==================== -->
+    <section class="collection-section" id="collection">
+      <div class="container">
+        <div class="collection-header">
+          <div>
+            <span class="section-kicker reveal-up">02 // CURATED FORMULATIONS</span>
+            <h2 class="section-heading reveal-up">
+              The <em>2027</em> Couture Vault
+            </h2>
+          </div>
+
+          <div class="collection-controls reveal-up">
+            <div class="filter-pills" id="categoryFilters" role="tablist" aria-label="Filter products by category">
+              <button class="filter-pill is-active" data-category="all" role="tab" aria-selected="true">All</button>
+              <button class="filter-pill" data-category="lips" role="tab" aria-selected="false">Lips</button>
+              <button class="filter-pill" data-category="complexion" role="tab" aria-selected="false">Complexion</button>
+              <button class="filter-pill" data-category="eyes" role="tab" aria-selected="false">Eyes</button>
+              <button class="filter-pill" data-category="cheek" role="tab" aria-selected="false">Cheek &amp; Glow</button>
+            </div>
+
+            <div class="sort-select-wrap">
+              <label for="sortSelect" class="sr-only">Sort products</label>
+              <select id="sortSelect" class="sort-select">
+                <option value="featured">Sort: Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product Grid (rendered dynamically by app.js) -->
+        <div class="product-grid" id="productGrid"></div>
+      </div>
+    </section>
+
+    <!-- ==================== 5. HORIZONTAL SCROLL-PINNED RUNWAY GALLERY ==================== -->
+    <section class="runway-section" id="runway">
+      <div class="runway-sticky">
+        <div class="runway-top-bar">
+          <div>
+            <span class="mono-tag">03 // HORIZONTAL LOOKBOOK</span>
+            <h2 class="runway-title">Runway <em>Chromatic</em> Archive</h2>
+          </div>
+          <div class="runway-progress-meta">
+            <span class="mono-tag" id="runwayChapterLabel">LOOK 01 / 04</span>
+            <div class="runway-bar-track">
+              <div class="runway-bar-fill" id="runwayBarFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="runway-viewport">
+          <div class="runway-track" id="runwayTrack">
+            <article class="runway-slide" data-look="01" data-product-id="velour-lip-sculpt">
+              <div class="runway-img-box" data-cursor="SHOP LOOK">
+                <img src="assets/hero-editorial.jpg" alt="Look 01 Glass Crimson" />
+                <span class="runway-num">01</span>
+              </div>
+              <div class="runway-caption">
+                <span class="mono-tag">AUTUMN / WINTER ’27</span>
+                <h3>Glass Crimson &amp; Obsidian</h3>
+                <p>Velour Lip Sculpt in <em>01 Crimson Atelier</em> layered over dewy serum base.</p>
+                <button class="btn-inline shop-look-btn" data-product-id="velour-lip-sculpt">Inspect Key Piece →</button>
+              </div>
+            </article>
+
+            <article class="runway-slide" data-look="02" data-product-id="lumiere-serum-tint">
+              <div class="runway-img-box" data-cursor="SHOP LOOK">
+                <img src="assets/editorial-look-1.jpg" alt="Look 02 Rose Bronze Chrome" />
+                <span class="runway-num">02</span>
+              </div>
+              <div class="runway-caption">
+                <span class="mono-tag">SEOUL CAPSULE</span>
+                <h3>Molten Rose-Bronze Halo</h3>
+                <p>Lumière Serum Skin Tint paired with reflective rose-bronze eyelid gloss.</p>
+                <button class="btn-inline shop-look-btn" data-product-id="lumiere-serum-tint">Inspect Key Piece →</button>
+              </div>
+            </article>
+
+            <article class="runway-slide" data-look="03" data-product-id="chroma-eye-palette">
+              <div class="runway-img-box" data-cursor="SHOP LOOK">
+                <img src="assets/product-palette.jpg" alt="Look 03 Nocturne Chrome" />
+                <span class="runway-num">03</span>
+              </div>
+              <div class="runway-caption">
+                <span class="mono-tag">ATELIER PIGMENTS</span>
+                <h3>Nocturne Velvet Geometry</h3>
+                <p>Six cold-pressed metallic &amp; suede shadows in smoked burgundy and pearl.</p>
+                <button class="btn-inline shop-look-btn" data-product-id="chroma-eye-palette">Inspect Key Piece →</button>
+              </div>
+            </article>
+
+            <article class="runway-slide" data-look="04" data-product-id="aether-pearl-highlighter">
+              <div class="runway-img-box" data-cursor="SHOP LOOK">
+                <img src="assets/product-highlighter.jpg" alt="Look 04 Bioluminescent Pearl" />
+                <span class="runway-num">04</span>
+              </div>
+              <div class="runway-caption">
+                <span class="mono-tag">BIOLUMINESCENCE</span>
+                <h3>Aether Liquid Pearl</h3>
+                <p>Micro-prismatic champagne elixir that catches candlelight without glitter.</p>
+                <button class="btn-inline shop-look-btn" data-product-id="aether-pearl-highlighter">Inspect Key Piece →</button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 6. INTERACTIVE ATELIER SHADE LAB ==================== -->
+    <section class="shadelab-section" id="shade-lab">
+      <div class="container">
+        <div class="shadelab-shell">
+          <div class="shadelab-left">
+            <span class="section-kicker reveal-up">04 // INTERACTIVE PIGMENT STUDIO</span>
+            <h2 class="section-heading reveal-up">
+              Atelier <em>Shade Lab</em>
+            </h2>
+            <p class="shadelab-desc">
+              Calibrate skin depth and surface finish to preview how our bio-pearl matrix adapts to your natural undertone in real time.
+            </p>
+
+            <!-- Skin Depth Slider -->
+            <div class="lab-control-group">
+              <div class="lab-label-row">
+                <label for="skinToneRange">1. Skin Depth Calibration</label>
+                <span class="mono-tag" id="skinToneReadout">Tone 03 — Warm Sand</span>
+              </div>
+              <input type="range" id="skinToneRange" min="0" max="5" step="1" value="2" class="lab-range" />
+              <div class="tone-stops" aria-hidden="true">
+                <span style="background:#f5dfd2"></span>
+                <span style="background:#e8c4ad"></span>
+                <span style="background:#d4a383"></span>
+                <span style="background:#b47b56"></span>
+                <span style="background:#855135"></span>
+                <span style="background:#4f2d1d"></span>
+              </div>
+            </div>
+
+            <!-- Finish Selector -->
+            <div class="lab-control-group">
+              <span class="lab-label">2. Pigment Finish Architecture</span>
+              <div class="finish-toggle-group" id="finishToggleGroup">
+                <button class="finish-btn is-active" data-finish="velvet">Velvet Matte</button>
+                <button class="finish-btn" data-finish="dew">Glass Dew</button>
+                <button class="finish-btn" data-finish="chrome">Chrome Pearl</button>
+              </div>
+            </div>
+
+            <!-- Shade Selector -->
+            <div class="lab-control-group">
+              <span class="lab-label">3. Select Couture Shade</span>
+              <div class="lab-shade-pills" id="labShadePills">
+                <button class="lab-shade-chip is-active" data-shade="Crimson Atelier" data-hex="#9E2438" data-product="velour-lip-sculpt">
+                  <span class="chip-dot" style="background:#9E2438"></span> Crimson Atelier
+                </button>
+                <button class="lab-shade-chip" data-shade="Rosewood Noir" data-hex="#7A3E48" data-product="velour-lip-sculpt">
+                  <span class="chip-dot" style="background:#7A3E48"></span> Rosewood Noir
+                </button>
+                <button class="lab-shade-chip" data-shade="Velvet Peony" data-hex="#D56C7D" data-product="petal-dew-blush">
+                  <span class="chip-dot" style="background:#D56C7D"></span> Velvet Peony
+                </button>
+                <button class="lab-shade-chip" data-shade="Champagne Halo" data-hex="#E5C8A8" data-product="aether-pearl-highlighter">
+                  <span class="chip-dot" style="background:#E5C8A8"></span> Champagne Halo
+                </button>
+              </div>
+            </div>
+
+            <div class="lab-cta-bar">
+              <div class="lab-match-stat">
+                <span class="mono-tag">HARMONY INDEX</span>
+                <strong id="harmonyScore">98% Undertone Match</strong>
+              </div>
+              <button class="btn-primary magnetic-btn" id="addLabMatchBtn" data-cursor="ADD">
+                <span>Add Matched Shade</span>
+                <span id="labPriceTag">$48</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Interactive Pigment Preview Orb & Skin Swatch -->
+          <div class="shadelab-right">
+            <div class="lab-stage-card" id="labStageCard">
+              <div class="lab-stage-bg" id="labStageSkin"></div>
+              <div class="lab-pigment-swatch" id="labPigmentSwatch" data-finish="velvet">
+                <div class="swatch-specular"></div>
+                <div class="swatch-grain"></div>
+              </div>
+              <div class="lab-stage-hud">
+                <span class="mono-tag" id="labHudFinish">FINISH: VELVET MATTE</span>
+                <strong id="labHudShade">01 Crimson Atelier</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 7. BEFORE / AFTER FINISH SCRUBBER ==================== -->
+    <section class="comparison-section" id="texture-study">
+      <div class="container">
+        <div class="comparison-header">
+          <div>
+            <span class="section-kicker reveal-up">05 // LUMINOUS PROOF</span>
+            <h2 class="section-heading reveal-up">Bare Glass Prep vs. <em>Full Velour</em></h2>
+          </div>
+          <p class="comparison-note reveal-up">Drag the chromatic divider to inspect light refraction across bare serum skin and full editorial pigment.</p>
+        </div>
+
+        <div class="compare-widget" id="compareWidget" data-cursor="DRAG">
+          <!-- After Layer (Base) -->
+          <div class="compare-layer compare-after">
+            <img src="assets/editorial-look-1.jpg" alt="Full Maison Vélour editorial finish" />
+            <span class="compare-badge compare-badge-right">FULL VELOUR FINISH</span>
+          </div>
+
+          <!-- Before Layer (Clipped) -->
+          <div class="compare-layer compare-before" id="compareBefore">
+            <img src="assets/editorial-look-1.jpg" alt="Bare glass skin serum prep" class="bare-prep-filter" />
+            <span class="compare-badge compare-badge-left">BARE SERUM PREP</span>
+          </div>
+
+          <div class="compare-divider" id="compareDivider" role="slider" aria-label="Compare bare prep and full finish" aria-valuemin="5" aria-valuemax="95" aria-valuenow="50" tabindex="0">
+            <div class="compare-handle">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M8 7l-5 5 5 5M16 7l5 5-5 5" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 8. ARCHITECTURAL FOOTER ==================== -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-top">
+          <div class="footer-newsletter">
+            <span class="mono-tag">PRIVATE ATELIER DISPATCH</span>
+            <h3>Receive early access to numbered 2027 pigment drops.</h3>
+            <form class="newsletter-form" id="newsletterForm">
+              <input type="email" id="newsletterEmail" placeholder="your@atelier.com" required aria-label="Email address" />
+              <button type="submit" class="magnetic-btn" data-cursor="JOIN">Join List</button>
+            </form>
+            <p class="newsletter-msg" id="newsletterMsg" aria-live="polite"></p>
+          </div>
+
+          <div class="footer-cols">
+            <div>
+              <span class="mono-tag">COLLECTIONS</span>
+              <ul>
+                <li><a href="#collection">Velour Lip Sculpt</a></li>
+                <li><a href="#collection">Lumière Serum Tint</a></li>
+                <li><a href="#collection">Chroma-6 Palettes</a></li>
+                <li><a href="#collection">Aether Pearl Elixir</a></li>
+              </ul>
+            </div>
+            <div>
+              <span class="mono-tag">FLAGSHIPS</span>
+              <ul>
+                <li>24 Rue Saint-Honoré, Paris</li>
+                <li>Hannam-daero 42, Seoul</li>
+                <li>SoHo Mercer St, New York</li>
+                <li>Concierge: atelier@maisonvelour.com</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-wordmark" aria-hidden="true">MAISON VÉLOUR</div>
+
+        <div class="footer-bottom">
+          <span class="mono-tag">© 2027 MAISON VÉLOUR COSMETICS. ALL RIGHTS RESERVED.</span>
+          <div class="footer-bottom-links">
+            <span class="mono-tag">PROMO CODE: VELOUR27 (15% OFF)</span>
+            <a href="#hero" class="back-top-btn magnetic-btn" data-cursor="TOP">Back to Top ↑</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ==================== SLIDE-OVER BAG DRAWER ==================== -->
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="bag-drawer" id="bagDrawer" aria-label="Shopping Bag" aria-hidden="true">
+    <div class="bag-drawer-header">
+      <div>
+        <span class="mono-tag">YOUR SELECTION</span>
+        <h3>Couture Bag</h3>
+      </div>
+      <button class="close-btn" id="closeBagBtn" aria-label="Close bag">✕</button>
+    </div>
+
+    <!-- Free Shipping Progress -->
+    <div class="shipping-meter">
+      <p id="shippingMeterText">Add <strong>$120</strong> for complimentary express courier</p>
+      <div class="shipping-track">
+        <div class="shipping-fill" id="shippingFill"></div>
+      </div>
+    </div>
+
+    <div class="bag-items" id="bagItems"></div>
+
+    <div class="bag-footer">
+      <form class="promo-form" id="promoForm">
+        <input type="text" id="promoInput" placeholder="Promo code (try VELOUR27)" aria-label="Promo code" />
+        <button type="submit">Apply</button>
+      </form>
+      <div class="bag-summary-row">
+        <span>Subtotal</span>
+        <strong id="bagSubtotal">$0.00</strong>
+      </div>
+      <div class="bag-summary-row discount-row" id="discountRow" hidden>
+        <span>Atelier Privilege (15%)</span>
+        <strong id="bagDiscount">-$0.00</strong>
+      </div>
+      <div class="bag-summary-row total-row">
+        <span>Estimated Total</span>
+        <strong id="bagTotal">$0.00</strong>
+      </div>
+      <button class="btn-primary checkout-btn" id="checkoutBtn">
+        <span>Proceed to Couture Checkout</span>
+        <span>→</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==================== WISHLIST DRAWER ==================== -->
+  <aside class="bag-drawer wishlist-drawer" id="wishlistDrawer" aria-label="Saved Shades" aria-hidden="true">
+    <div class="bag-drawer-header">
+      <div>
+        <span class="mono-tag">SAVED FORMULATIONS</span>
+        <h3>Wishlist</h3>
+      </div>
+      <button class="close-btn" id="closeWishlistBtn" aria-label="Close wishlist">✕</button>
+    </div>
+    <div class="bag-items" id="wishlistItems"></div>
+  </aside>
+
+  <!-- ==================== QUICK-VIEW PRODUCT MODAL ==================== -->
+  <div class="modal-overlay" id="quickViewModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-card quickview-card">
+      <button class="close-btn modal-close" id="closeQuickViewBtn" aria-label="Close product modal">✕</button>
+      <div class="quickview-body" id="quickViewBody"></div>
+    </div>
+  </div>
+
+  <!-- ==================== CHECKOUT MODAL ==================== -->
+  <div class="modal-overlay" id="checkoutModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-card checkout-card">
+      <button class="close-btn modal-close" id="closeCheckoutBtn" aria-label="Close checkout">✕</button>
+      <div id="checkoutContent"></div>
+    </div>
+  </div>
+
+  <!-- ==================== SEARCH OVERLAY ==================== -->
+  <div class="search-overlay" id="searchOverlay" aria-hidden="true">
+    <div class="search-box">
+      <div class="search-input-row">
+        <span class="mono-tag">SEARCH VAULT</span>
+        <input type="text" id="searchInput" placeholder="Search lipstick, serum, rosewood, pearl..." autocomplete="off" />
+        <button class="close-btn" id="closeSearchBtn" aria-label="Close search">ESC</button>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
