@@ -1,13 +1,15 @@
 /* ============================================================
    MAISON VÉLOUR — 2027 COUTURE ADMIN WORKFLOW & CHARTS ENGINE
-   Connected to Supabase Project: wjchyhnoafkbyosfffqh
+   Connected to supabaseClient Project: wjchyhnoafkbyosfffqh
    ============================================================ */
 
-// 1. SUPABASE CLIENT INITIALIZATION
-const SUPABASE_URL = "https://wjchyhnoafkbyosfffqh.supabase.co";
+// 1. supabaseClient CLIENT INITIALIZATION
+const SUPABASE_URL = "https://wjchyhnoafkbyosfffqh.supabaseClient.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndqY2h5aG5vYWZrYnlvc2ZmZnFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1NTY1NTEsImV4cCI6MjExMTEzMjU1MX0.l7ZA3A2cZj3Pzd4TLLtMc3K2uNCyQYRkVDochJGIO6o";
 
-const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+const supabaseClient = (window.supabaseClient && typeof window.supabaseClient.createClient === "function") 
+  ? window.supabaseClient.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) 
+  : null;
 
 // Application State
 const state = {
@@ -103,15 +105,15 @@ async function unlockAdminConsole() {
 }
 
 // ============================================================
-// DATA FETCHING (SUPABASE + FALLBACK)
+// DATA FETCHING (supabaseClient + FALLBACK)
 // ============================================================
 async function fetchInitialData() {
-  showToast("Synchronizing with Supabase remote...");
+  showToast("Synchronizing with supabaseClient remote...");
   
-  if (supabase) {
+  if (supabaseClient) {
     try {
       // 1. Fetch Orders with Items
-      const { data: ordersData, error: ordersErr } = await supabase
+      const { data: ordersData, error: ordersErr } = await supabaseClient
         .from("orders")
         .select(`
           *,
@@ -123,7 +125,7 @@ async function fetchInitialData() {
       state.orders = ordersData || [];
 
       // 2. Fetch Products
-      const { data: prodData, error: prodErr } = await supabase
+      const { data: prodData, error: prodErr } = await supabaseClient
         .from("products")
         .select(`
           *,
@@ -133,9 +135,9 @@ async function fetchInitialData() {
       if (prodErr) throw prodErr;
       state.products = prodData || [];
 
-      document.getElementById("connStatusPill").title = "Remote Supabase Postgres Connected";
+      document.getElementById("connStatusPill").title = "Remote supabaseClient Postgres Connected";
     } catch (err) {
-      console.warn("Supabase fetch notice, using cached/seeded state:", err);
+      console.warn("supabaseClient fetch notice, using cached/seeded state:", err);
       loadMockSeedData();
     }
   } else {
@@ -237,12 +239,12 @@ function loadMockSeedData() {
 }
 
 // ============================================================
-// REALTIME SUPABASE WEBSOCKET RADAR
+// REALTIME supabaseClient WEBSOCKET RADAR
 // ============================================================
 function initRealtimeRadar() {
-  if (!supabase) return;
+  if (!supabaseClient) return;
 
-  state.realtimeChannel = supabase
+  state.realtimeChannel = supabaseClient
     .channel("public:orders")
     .on(
       "postgres_changes",
@@ -252,7 +254,7 @@ function initRealtimeRadar() {
         
         if (eventType === "INSERT") {
           // Fetch complete items for the new order
-          const { data: itemRows } = await supabase
+          const { data: itemRows } = await supabaseClient
             .from("order_items")
             .select("*")
             .eq("order_id", newRec.id);
@@ -510,7 +512,7 @@ function renderInventoryView() {
 }
 
 // ============================================================
-// WORKFLOW STATE TRANSITIONS (SUPABASE REALTIME PUSH)
+// WORKFLOW STATE TRANSITIONS (supabaseClient REALTIME PUSH)
 // ============================================================
 async function moveOrderWorkflow(orderId, newStatus) {
   if (!WORKFLOW_STAGES.includes(newStatus)) return;
@@ -533,8 +535,8 @@ async function moveOrderWorkflow(orderId, newStatus) {
 
   showToast(`Moved #${orderId.slice(0, 8)}: ${oldStatus.toUpperCase()} → ${newStatus.toUpperCase()}`);
 
-  // Persist to Supabase
-  if (supabase) {
+  // Persist to supabaseClient
+  if (supabaseClient) {
     try {
       const updatePayload = { 
         status: newStatus, 
@@ -543,14 +545,14 @@ async function moveOrderWorkflow(orderId, newStatus) {
         carrier: order.carrier
       };
 
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from("orders")
         .update(updatePayload)
         .eq("id", orderId);
 
       if (error) throw error;
     } catch (err) {
-      console.error("Supabase update error:", err);
+      console.error("supabaseClient update error:", err);
       showToast(`Warning: Local updated, cloud sync had note: ${err.message}`);
     }
   }
@@ -889,10 +891,10 @@ function initSimulateButton() {
       ]
     };
 
-    // If Supabase is available, insert into DB
-    if (supabase) {
+    // If supabaseClient is available, insert into DB
+    if (supabaseClient) {
       try {
-        const { error: ordErr } = await supabase.from("orders").insert([{
+        const { error: ordErr } = await supabaseClient.from("orders").insert([{
           id: newOrder.id,
           shipping_name: newOrder.shipping_name,
           shipping_email: newOrder.shipping_email,
@@ -905,7 +907,7 @@ function initSimulateButton() {
         }]);
 
         if (!ordErr) {
-          await supabase.from("order_items").insert(newOrder.order_items.map(i => ({
+          await supabaseClient.from("order_items").insert(newOrder.order_items.map(i => ({
             order_id: newOrder.id,
             product_id: i.product_id,
             shade_name: i.shade_name,
