@@ -633,7 +633,7 @@ document.getElementById("btnCloseOrderModal").addEventListener("click", () => {
 });
 
 // ============================================================
-// HIGH-END GLASSMORPHIC CHARTS (CHART.JS)
+// HIGH-END GLASSMORPHIC CHARTS (CHART.JS) - 100% REAL LIVE DATA
 // ============================================================
 function initCharts() {
   Chart.defaults.color = "rgba(246, 241, 235, 0.6)";
@@ -649,11 +649,11 @@ function initCharts() {
     state.charts.revenue = new Chart(revCtx, {
       type: "line",
       data: {
-        labels: ["Day -6", "Day -5", "Day -4", "Day -3", "Day -2", "Yesterday", "Today"],
+        labels: getLast7DaysLabels(),
         datasets: [
           {
             label: "Gross Revenue ($)",
-            data: [420, 680, 540, 890, 720, 1140, 1380],
+            data: [0, 0, 0, 0, 0, 0, 0],
             borderColor: "#b83246",
             backgroundColor: gradient,
             fill: true,
@@ -665,7 +665,7 @@ function initCharts() {
           },
           {
             label: "Order Volume",
-            data: [3, 5, 4, 7, 6, 9, 11],
+            data: [0, 0, 0, 0, 0, 0, 0],
             borderColor: "#e6d1b1",
             borderDash: [5, 5],
             tension: 0.38,
@@ -681,8 +681,8 @@ function initCharts() {
         plugins: { legend: { display: false } },
         scales: {
           x: { grid: { color: "rgba(255,255,255,0.05)" } },
-          y: { grid: { color: "rgba(255,255,255,0.05)" }, ticks: { callback: v => `$${v}` } },
-          y1: { position: "right", grid: { display: false } }
+          y: { grid: { color: "rgba(255,255,255,0.05)" }, ticks: { callback: v => `$${v}` }, beginAtZero: true },
+          y1: { position: "right", grid: { display: false }, beginAtZero: true, ticks: { stepSize: 1 } }
         }
       }
     });
@@ -694,9 +694,9 @@ function initCharts() {
     state.charts.category = new Chart(catCtx, {
       type: "doughnut",
       data: {
-        labels: ["Lips (Velour Sculpt)", "Complexion (Lumière)", "Eyes (Chroma-6)", "Cheek (Petal Dew)", "Glow (Aether)"],
+        labels: ["Lips", "Complexion", "Eyes", "Cheek", "Glow"],
         datasets: [{
-          data: [38, 26, 18, 12, 6],
+          data: [0, 0, 0, 0, 0],
           backgroundColor: ["#b83246", "#e6d1b1", "#592237", "#d56c7d", "#c7a67b"],
           borderWidth: 0,
           hoverOffset: 6
@@ -721,7 +721,7 @@ function initCharts() {
       data: {
         labels: ["Pending", "Confirmed", "Atelier Prep", "In Transit", "Delivered"],
         datasets: [{
-          data: [2, 3, 4, 5, 8],
+          data: [0, 0, 0, 0, 0],
           backgroundColor: [
             "rgba(243, 156, 18, 0.45)",
             "rgba(52, 152, 219, 0.45)",
@@ -736,7 +736,7 @@ function initCharts() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        scales: { r: { grid: { color: "rgba(255,255,255,0.06)" }, ticks: { display: false } } },
+        scales: { r: { grid: { color: "rgba(255,255,255,0.06)" }, ticks: { display: false }, beginAtZero: true } },
         plugins: { legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 10 } } } }
       }
     });
@@ -748,11 +748,11 @@ function initCharts() {
     state.charts.shades = new Chart(shadesCtx, {
       type: "bar",
       data: {
-        labels: ["01 Crimson Atelier", "04 Rosewood Noir", "230 Warm Sand", "Nocturne Rose", "Velvet Peony", "Champagne Halo"],
+        labels: ["No orders placed yet"],
         datasets: [{
           label: "Units Dispatched",
-          data: [42, 31, 28, 22, 19, 15],
-          backgroundColor: ["#9E2438", "#7A3E48", "#D6A888", "#8B3E4D", "#D56C7D", "#E5C8A8"],
+          data: [0],
+          backgroundColor: ["#9E2438"],
           borderRadius: 6
         }]
       },
@@ -762,18 +762,97 @@ function initCharts() {
         plugins: { legend: { display: false } },
         scales: {
           x: { grid: { display: false } },
-          y: { grid: { color: "rgba(255,255,255,0.05)" } }
+          y: { grid: { color: "rgba(255,255,255,0.05)" }, beginAtZero: true, ticks: { stepSize: 1 } }
         }
       }
     });
   }
+
+  updateCharts();
+}
+
+function getLast7DaysLabels() {
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }));
+  }
+  return days;
 }
 
 function updateCharts() {
+  if (!state.charts.revenue) return;
+
+  // 1. Compute dynamic daily revenue & order counts for last 7 days
+  const revData = [0, 0, 0, 0, 0, 0, 0];
+  const countData = [0, 0, 0, 0, 0, 0, 0];
+  const now = new Date();
+
+  state.orders.forEach(order => {
+    const orderDate = new Date(order.created_at);
+    const diffDays = Math.floor((now - orderDate) / (1000 * 60 * 60 * 24));
+    if (diffDays >= 0 && diffDays < 7) {
+      const idx = 6 - diffDays;
+      revData[idx] += Number(order.total || 0);
+      countData[idx] += 1;
+    }
+  });
+
+  state.charts.revenue.data.datasets[0].data = revData;
+  state.charts.revenue.data.datasets[1].data = countData;
+  state.charts.revenue.update();
+
+  // 2. Compute dynamic category breakdown
+  if (state.charts.category) {
+    const catMap = { lips: 0, complexion: 0, eyes: 0, cheek: 0, glow: 0 };
+    state.orders.forEach(order => {
+      (order.order_items || []).forEach(it => {
+        const prod = state.products.find(p => p.id === it.product_id);
+        const cat = prod ? prod.category : "lips";
+        if (catMap[cat] !== undefined) catMap[cat] += (it.qty || 1);
+        else catMap.lips += (it.qty || 1);
+      });
+    });
+
+    const catValues = [catMap.lips, catMap.complexion, catMap.eyes, catMap.cheek, catMap.glow];
+    const totalItems = catValues.reduce((a, b) => a + b, 0);
+    state.charts.category.data.datasets[0].data = totalItems > 0 ? catValues : [0, 0, 0, 0, 0];
+    state.charts.category.update();
+  }
+
+  // 3. Workflow State Distribution Radar
   if (state.charts.radar) {
     const stageCounts = WORKFLOW_STAGES.map(st => state.orders.filter(o => o.status === st).length);
     state.charts.radar.data.datasets[0].data = stageCounts;
     state.charts.radar.update();
+  }
+
+  // 4. Top Shades Bar Chart (dynamic from actual ordered shades)
+  if (state.charts.shades) {
+    const shadeMap = {};
+    const colorMap = {};
+
+    state.orders.forEach(order => {
+      (order.order_items || []).forEach(it => {
+        const name = it.shade_name || "Classic Velvet";
+        shadeMap[name] = (shadeMap[name] || 0) + (it.qty || 1);
+        if (it.shade_hex) colorMap[name] = it.shade_hex;
+      });
+    });
+
+    const sortedShades = Object.entries(shadeMap).sort((a, b) => b[1] - a[1]).slice(0, 6);
+
+    if (sortedShades.length > 0) {
+      state.charts.shades.data.labels = sortedShades.map(s => s[0]);
+      state.charts.shades.data.datasets[0].data = sortedShades.map(s => s[1]);
+      state.charts.shades.data.datasets[0].backgroundColor = sortedShades.map(s => colorMap[s[0]] || "#9E2438");
+    } else {
+      state.charts.shades.data.labels = ["Awaiting first order"];
+      state.charts.shades.data.datasets[0].data = [0];
+      state.charts.shades.data.datasets[0].backgroundColor = ["rgba(230,209,177,0.2)"];
+    }
+    state.charts.shades.update();
   }
 }
 
