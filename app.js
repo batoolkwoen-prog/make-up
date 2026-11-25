@@ -2,6 +2,13 @@
    MAISON VÉLOUR — 2027 MOTION ENGINE & E-COMMERCE STOREFRONT
    ============================================================ */
 
+// Supabase Client for Real Production Orders
+const STORE_SUPABASE_URL = "https://wjchyhnoafkbyosfffqh.supabase.co";
+const STORE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndqY2h5aG5vYWZrYnlvc2ZmZnFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1NTY1NTEsImV4cCI6MjExMTEzMjU1MX0.l7ZA3A2cZj3Pzd4TLLtMc3K2uNCyQYRkVDochJGIO6o";
+const storeSupabase = (window.supabase && typeof window.supabase.createClient === "function") 
+  ? window.supabase.createClient(STORE_SUPABASE_URL, STORE_SUPABASE_ANON_KEY) 
+  : null;
+
 const PRODUCTS = [
   {
     id: "velour-lip-sculpt",
@@ -806,29 +813,82 @@ function openCheckout() {
     <h3 style="font-family:var(--font-serif);font-size:2rem;font-weight:400;margin:6px 0">Complete Order — $${total.toFixed(2)}</h3>
     <p style="color:var(--ink-muted);font-size:0.88rem">Complimentary silk ribbon packaging included with every 2027 order.</p>
     <form class="checkout-form" id="simCheckoutForm">
-      <input type="text" placeholder="Full Name" required />
-      <input type="email" placeholder="Email for Digital Atelier Receipt" required />
-      <input type="text" placeholder="Shipping Address, City" required />
+      <input type="text" id="checkoutFullName" placeholder="Full Name" required />
+      <input type="email" id="checkoutEmail" placeholder="Email for Digital Atelier Receipt" required />
+      <input type="text" id="checkoutAddress" placeholder="Shipping Address, City" required />
       <div class="checkout-row">
-        <input type="text" placeholder="Postal Code" required />
-        <input type="text" placeholder="Country" value="France / International" required />
+        <input type="text" id="checkoutPostal" placeholder="Postal Code" required />
+        <input type="text" id="checkoutCountry" placeholder="Country" value="France" required />
       </div>
       <button type="submit" class="btn-primary" style="width:100%;margin-top:6px">Confirm Couture Order</button>
     </form>`;
 
-  document.getElementById("simCheckoutForm").addEventListener("submit", (e) => {
+  document.getElementById("simCheckoutForm").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const submitBtn = e.target.querySelector("button[type='submit']");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Processing Order...";
+
+    const fullName = document.getElementById("checkoutFullName").value.trim();
+    const email = document.getElementById("checkoutEmail").value.trim();
+    const address = document.getElementById("checkoutAddress").value.trim();
+    const postal = document.getElementById("checkoutPostal").value.trim();
+    const country = document.getElementById("checkoutCountry").value.trim();
+    const fullAddress = `${address}, ${postal}, ${country}`;
+
+    const orderId = crypto.randomUUID ? crypto.randomUUID() : `mv-${Date.now()}`;
     const orderNum = `MV-27-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const currentBag = [...state.bag];
+    const discountAmount = state.promoApplied ? subtotal * 0.15 : 0;
+    const finalTotal = subtotal - discountAmount;
+
+    // Insert Real Order to Supabase Database
+    if (storeSupabase) {
+      try {
+        const { error: orderErr } = await storeSupabase.from("orders").insert([{
+          id: orderId,
+          shipping_name: fullName,
+          shipping_email: email,
+          guest_email: email,
+          shipping_address: fullAddress,
+          status: "pending",
+          subtotal: subtotal,
+          discount: discountAmount,
+          total: finalTotal,
+          promo_code: state.promoApplied ? "VELOUR27" : null
+        }]);
+
+        if (orderErr) throw orderErr;
+
+        // Insert Order Items
+        const orderItems = currentBag.map(item => ({
+          order_id: orderId,
+          product_id: item.id,
+          shade_name: item.shadeName,
+          shade_hex: item.shadeHex,
+          qty: item.qty,
+          unit_price: item.price
+        }));
+
+        const { error: itemsErr } = await storeSupabase.from("order_items").insert(orderItems);
+        if (itemsErr) console.warn("Order items sync note:", itemsErr);
+      } catch (err) {
+        console.error("Order Supabase push error:", err);
+      }
+    }
+
     state.bag = [];
     state.promoApplied = false;
     persistState();
     renderBag();
+
     content.innerHTML = `
       <div class="order-success">
         <div class="order-success-mark">✓</div>
         <span class="mono-tag">ORDER CONFIRMED · ${orderNum}</span>
-        <h3 style="font-family:var(--font-serif);font-size:2rem;font-weight:400;margin:8px 0">Merci. Your curation is being prepared.</h3>
-        <p style="color:var(--ink-muted);font-size:0.9rem;margin-bottom:20px">Our Paris Atelier team will dispatch your temperature-controlled parcel within 24 hours.</p>
+        <h3 style="font-family:var(--font-serif);font-size:2rem;font-weight:400;margin:8px 0">Merci, ${fullName}. Your curation is placed.</h3>
+        <p style="color:var(--ink-muted);font-size:0.9rem;margin-bottom:20px">Your order is logged directly into our Atelier system and Paris fulfillment queue.</p>
         <button class="btn-primary" id="doneOrderBtn">Return to Storefront</button>
       </div>`;
     document.getElementById("doneOrderBtn").addEventListener("click", closeAllOverlays);

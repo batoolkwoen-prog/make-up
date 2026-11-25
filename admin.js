@@ -148,94 +148,7 @@ async function fetchInitialData() {
 }
 
 function loadMockSeedData() {
-  state.orders = [
-    {
-      id: "f1a23b45-67c8-49de-8012-34567890abcd",
-      shipping_name: "Clara Delacroix",
-      shipping_email: "clara.delacroix@vogue.fr",
-      shipping_address: "18 Rue de la Paix, 75002 Paris, France",
-      status: "pending",
-      subtotal: 130.00,
-      discount: 19.50,
-      total: 110.50,
-      promo_code: "VELOUR27",
-      created_at: new Date(Date.now() - 1000 * 60 * 18).toISOString(),
-      order_items: [
-        { product_id: "velour-lip-sculpt", shade_name: "01 Crimson Atelier", shade_hex: "#9E2438", qty: 1, unit_price: 48.00 },
-        { product_id: "chroma-eye-palette", shade_name: "Nocturne Rose", shade_hex: "#8B3E4D", qty: 1, unit_price: 82.00 }
-      ]
-    },
-    {
-      id: "a9b8c7d6-e5f4-4321-ba09-876543210fed",
-      shipping_name: "Minji Kim",
-      shipping_email: "minji.kim@atelier-seoul.kr",
-      shipping_address: "Hannam The Hill, Yongsan-gu, Seoul, Korea",
-      status: "confirmed",
-      subtotal: 196.00,
-      discount: 0.00,
-      total: 196.00,
-      promo_code: null,
-      created_at: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
-      order_items: [
-        { product_id: "lumiere-serum-tint", shade_name: "230 Warm Sand", shade_hex: "#D6A888", qty: 2, unit_price: 68.00 },
-        { product_id: "petal-dew-blush", shade_name: "Velvet Peony", shade_hex: "#D56C7D", qty: 1, unit_price: 44.00 }
-      ]
-    },
-    {
-      id: "e3d2c1b0-f9a8-4765-8123-456789abcdef",
-      shipping_name: "Elena Rostova",
-      shipping_email: "elena.rostova@harpers.com",
-      shipping_address: "432 Park Ave, Apt 58B, New York, NY 10022",
-      status: "processing",
-      subtotal: 204.00,
-      discount: 30.60,
-      total: 173.40,
-      promo_code: "VELOUR27",
-      carrier: "DHL Express",
-      created_at: new Date(Date.now() - 1000 * 60 * 360).toISOString(),
-      order_items: [
-        { product_id: "lumiere-serum-tint", shade_name: "110 Alabaster", shade_hex: "#F2DCCB", qty: 1, unit_price: 68.00 },
-        { product_id: "chroma-eye-palette", shade_name: "Molten Bronze", shade_hex: "#9C6E4E", qty: 1, unit_price: 82.00 },
-        { product_id: "aether-pearl-highlighter", shade_name: "Champagne Halo", shade_hex: "#E5C8A8", qty: 1, unit_price: 54.00 }
-      ]
-    },
-    {
-      id: "11223344-5566-4778-8990-aabbccddeeff",
-      shipping_name: "Camille Bernard",
-      shipping_email: "camille.bernard@lux.ch",
-      shipping_address: "Quai du Mont-Blanc 12, Geneva, Switzerland",
-      status: "shipped",
-      subtotal: 92.00,
-      discount: 0.00,
-      total: 92.00,
-      tracking_number: "MV-DHL-984210",
-      carrier: "DHL Express",
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-      order_items: [
-        { product_id: "velour-lip-sculpt", shade_name: "04 Rosewood Noir", shade_hex: "#7A3E48", qty: 1, unit_price: 48.00 },
-        { product_id: "petal-dew-blush", shade_name: "Sunlit Fig", shade_hex: "#A64B58", qty: 1, unit_price: 44.00 }
-      ]
-    },
-    {
-      id: "99887766-5544-4332-2110-ffeeddccbbaa",
-      shipping_name: "Sophia Vanderbilt",
-      shipping_email: "sophia.vanderbilt@london.co.uk",
-      shipping_address: "14 Kensington Palace Gardens, London, UK",
-      status: "delivered",
-      subtotal: 274.00,
-      discount: 41.10,
-      total: 232.90,
-      promo_code: "VELOUR27",
-      tracking_number: "MV-FEDEX-44129",
-      carrier: "FedEx Couture Priority",
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(),
-      order_items: [
-        { product_id: "velour-lip-sculpt", shade_name: "01 Crimson Atelier", shade_hex: "#9E2438", qty: 2, unit_price: 48.00 },
-        { product_id: "lumiere-serum-tint", shade_name: "230 Warm Sand", shade_hex: "#D6A888", qty: 1, unit_price: 68.00 },
-        { product_id: "chroma-eye-palette", shade_name: "Molten Bronze", shade_hex: "#9C6E4E", qty: 1, unit_price: 82.00 }
-      ]
-    }
-  ];
+  state.orders = [];
 }
 
 // ============================================================
@@ -868,67 +781,10 @@ function updateCharts() {
 // SIMULATE LIVE ORDER & CONTROLS
 // ============================================================
 function initSimulateButton() {
-  document.getElementById("btnSimulateOrder").addEventListener("click", async () => {
-    const sampleNames = ["Genevieve Laurent", "Astrid Lindholm", "Chloe Moreau", "Hanae Mori", "Victoria Sterling"];
-    const sampleCities = ["Paris, France", "Stockholm, Sweden", "Lyon, France", "Tokyo, Japan", "Beverly Hills, USA"];
-    const randomName = sampleNames[Math.floor(Math.random() * sampleNames.length)];
-    const randomCity = sampleCities[Math.floor(Math.random() * sampleCities.length)];
-
-    const newOrder = {
-      id: crypto.randomUUID ? crypto.randomUUID() : `mv-order-${Date.now()}`,
-      shipping_name: randomName,
-      shipping_email: `${randomName.toLowerCase().replace(' ', '.')}@couture.com`,
-      shipping_address: `Atelier Boulevard 27, ${randomCity}`,
-      status: "pending",
-      subtotal: 146.00,
-      discount: 21.90,
-      total: 124.10,
-      promo_code: "VELOUR27",
-      created_at: new Date().toISOString(),
-      order_items: [
-        { product_id: "velour-lip-sculpt", shade_name: "01 Crimson Atelier", shade_hex: "#9E2438", qty: 1, unit_price: 48.00 },
-        { product_id: "chroma-eye-palette", shade_name: "Nocturne Rose", shade_hex: "#8B3E4D", qty: 1, unit_price: 82.00 }
-      ]
-    };
-
-    // If supabaseClient is available, insert into DB
-    if (supabaseClient) {
-      try {
-        const { error: ordErr } = await supabaseClient.from("orders").insert([{
-          id: newOrder.id,
-          shipping_name: newOrder.shipping_name,
-          shipping_email: newOrder.shipping_email,
-          shipping_address: newOrder.shipping_address,
-          status: newOrder.status,
-          subtotal: newOrder.subtotal,
-          discount: newOrder.discount,
-          total: newOrder.total,
-          promo_code: newOrder.promo_code
-        }]);
-
-        if (!ordErr) {
-          await supabaseClient.from("order_items").insert(newOrder.order_items.map(i => ({
-            order_id: newOrder.id,
-            product_id: i.product_id,
-            shade_name: i.shade_name,
-            shade_hex: i.shade_hex,
-            qty: i.qty,
-            unit_price: i.unit_price
-          })));
-        }
-      } catch (e) {
-        console.warn("Simulate insert note:", e);
-      }
-    }
-
-    state.orders.unshift(newOrder);
-    renderAllViews();
-    updateCharts();
-    triggerRadarPulse();
-    showToast(`⚡ Order Detected: #${newOrder.id.slice(0, 8)} (${newOrder.shipping_name})`);
-  });
-
-  document.getElementById("btnRefresh").addEventListener("click", () => fetchInitialData());
+  const btn = document.getElementById("btnSimulateOrder");
+  if (btn) btn.style.display = "none";
+  const refreshBtn = document.getElementById("btnRefresh");
+  if (refreshBtn) refreshBtn.addEventListener("click", () => fetchInitialData());
 }
 
 // Navigation View Switcher
